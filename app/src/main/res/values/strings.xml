@@ -1,3 +1,174 @@
 <resources>
     <string name="app_name">Police Wanings</string>
+    <string name="title_activity_main">ActivityMain</string>
+    <string name="place_main_description">VÝBER REGION VÝSKYTOV HLIADOK</string>
+    <string name="select_country">ZADAJ KRAJINU</string>
+    <string-array name="counrty_spinner_string_array">
+        <item></item>
+        <item>CZECH REPUBLIC</item>
+        <item>SLOVAKIA</item>
+    </string-array>
+    <string name="select_district">ZADAJ REGION</string>
+
+    <string-array name="slovakia_district_string_array">
+        <item></item>
+        <item>Banská Bystrica</item>
+        <item>Banská Štiavnica</item>
+        <item>Bardejov</item>
+        <item>Bánovce nad Bebravou</item>
+        <item>Brezno</item>
+        <item>Bratislava I</item>
+        <item>Bratislava II</item>
+        <item>Bratislava III</item>
+        <item>Bratislava IV</item>
+        <item>Bratislava V</item>
+        <item>Bytca</item>
+        <item>Cadca</item>
+        <item>Detva</item>
+        <item>Dolný Kubín</item>
+        <item>Dunajská Streda</item>
+        <item>Galanta</item>
+        <item>Gelnica</item>
+        <item>Hlohovec</item>
+        <item>Humenné</item>
+        <item>Ilava</item>
+        <item>Kežmarok</item>
+        <item>Komárno</item>
+        <item>Košice I</item>
+        <item>Košice II</item>
+        <item>Košice III</item>
+        <item>Košice IV</item>
+        <item>Košice – okolie</item>
+        <item>Krupina</item>
+        <item>Kysucké Nové Mesto</item>
+        <item>Levice</item>
+        <item>Levoca</item>
+        <item>Liptovský Mikuláš</item>
+        <item>Lucenec</item>
+        <item>Malacky</item>
+        <item>Martin</item>
+        <item>Medzilaborce</item>
+        <item>Michalovce</item>
+        <item>Myjava</item>
+        <item>Námestovo</item>
+        <item>Nitra</item>
+        <item>Nové Mesto nad Váhom</item>
+        <item>Nové Zámky</item>
+        <item>Partizánske</item>
+        <item>Pezinok</item>
+        <item>Piešťany</item>
+        <item>Poltár</item>
+        <item>Poprad</item>
+        <item>Považská Bystrica</item>
+        <item>Prešov</item>
+        <item>Prievidza</item>
+        <item>Púchov</item>
+        <item>Revúca</item>
+        <item>Rimavská Sobota</item>
+        <item>Rožňava</item>
+        <item>Ružomberok</item>
+        <item>Sabinov</item>
+        <item>Senec</item>
+        <item>Senica</item>
+        <item>Skalica</item>
+        <item>Snina</item>
+        <item>Sobrance</item>
+        <item>Spišská Nová Ves</item>
+        <item>Stará Ľubovňa</item>
+        <item>Stropkov</item>
+        <item>Svidník</item>
+        <item>Šaľa</item>
+        <item>Topolcany</item>
+        <item>Trebišov</item>
+        <item>Trenčín</item>
+        <item>Trnava</item>
+        <item>Turcianske Teplice</item>
+        <item>Tvrdošín</item>
+        <item>Veľký Krtíš</item>
+        <item>Vranov nad Toplou</item>
+        <item>Zlaté Moravce</item>
+        <item>Zvolen</item>
+        <item>Žarnovica</item>
+        <item>Žiar nad Hronom</item>
+        <item>Žilina</item>
+    </string-array>
+    <string-array name="czechrepublic_district_string_array">
+        <item></item>
+        <item>Beroun</item>
+        <item>Blansko</item>
+        <item>Brno</item>
+        <item>Brno-venkov</item>
+        <item>Bruntál</item>
+        <item>Břeclav</item>
+        <item>Česká Lípa</item>
+        <item>České Budějovice</item>
+        <item>Český Krumlov</item>
+        <item>Děčín</item>
+        <item>Domažlice</item>
+        <item>Frýdek-Místek</item>
+        <item>Havlíčkův Brod</item>
+        <item>Hodonín</item>
+        <item>Hradec Králové</item>
+        <item>Cheb</item>
+        <item>Chomutov</item>
+        <item>Chrudim</item>
+        <item>Jablonec nad Nisou</item>
+        <item>Jeseník</item>
+        <item>Jičín</item>
+        <item>Jihlava</item>
+        <item>Jindřichův Hradec</item>
+        <item>Karlovy Vary</item>
+        <item>Karviná</item>
+        <item>Kladno</item>
+        <item>Klatovy</item>
+        <item>Kolín</item>
+        <item>Kroměříž</item>
+        <item>Kutná Hora</item>
+        <item>Liberec</item>
+        <item>Litoměřice</item>
+        <item>Louny</item>
+        <item>Mělník</item>
+        <item>Mladá Boleslav</item>
+        <item>Most</item>
+        <item>Náchod</item>
+        <item>Nový Jičín</item>
+        <item>Nymburk</item>
+        <item>Olomouc</item>
+        <item>Opava</item>
+        <item>Ostrava</item>
+        <item>Pardubice</item>
+        <item>Pelhřimov</item>
+        <item>Písek</item>
+        <item>Plzeň</item>
+        <item>Plzeň-jih (South)</item>
+        <item>Plzeň-sever (North)</item>
+        <item>Prague</item>
+        <item>Praha-východ (East)</item>
+        <item>Praha-západ (West)</item>
+        <item>Prachatice</item>
+        <item>Prostějov</item>
+        <item>Přerov</item>
+        <item>Příbram</item>
+        <item>Rakovník</item>
+        <item>Rokycany</item>
+        <item>Rychnov nad Kněžnou</item>
+        <item>Semily</item>
+        <item>Sokolov</item>
+        <item>Strakonice</item>
+        <item>Svitavy</item>
+        <item>Šumperk</item>
+        <item>Tábor</item>
+        <item>Tachov</item>
+        <item>Teplice</item>
+        <item>Trutnov</item>
+        <item>Třebíč</item>
+        <item>Uherské Hradiště</item>
+        <item>Ústí nad Labem</item>
+        <item>Ústí nad Orlicí</item>
+        <item>Vsetín</item>
+        <item>Vyškov</item>
+        <item>Zlín</item>
+        <item>Znojmo</item>
+        <item>Žďár nad Sázavou</item>
+    </string-array>
 </resources>

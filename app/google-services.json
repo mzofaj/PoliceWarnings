@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "2303998531",
+    "firebase_url": "https://policewarnings-66707.firebaseio.com",
+    "project_id": "policewarnings-66707",
+    "storage_bucket": "policewarnings-66707.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:2303998531:android:36a21be9c4caa720",
+        "android_client_info": {
+          "package_name": "eu.fukysoft.policewanings"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "2303998531-05s5qe3pvp7j5qf8phribfj83ec0u8je.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "eu.fukysoft.policewanings",
+            "certificate_hash": "109F79323AB955708589FBC61EF0DAB595457165"
+          }
+        },
+        {
+          "client_id": "2303998531-89aovrpka0it8fatfkgcsl0bn6jtgp3u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjYuS4OOZPsUilDpP7puZSpXN-PV34cyw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "2303998531-89aovrpka0it8fatfkgcsl0bn6jtgp3u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
