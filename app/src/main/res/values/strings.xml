@@ -1,97 +1,34 @@
 <resources>
     <string name="app_name">Police Wanings</string>
+    <string name="button_getgps">Zadať region z GPS</string>
+    <string name="button_set_fast_message">Pridať rýchle upozornenie</string>
+    <string name="title_dialog_getgps_positive">GPS</string>
+    <string name="content_dialog_getgps_negative">MANUALNE</string>
     <string name="title_activity_main">ActivityMain</string>
     <string name="place_main_description">VÝBER REGION VÝSKYTOV HLIADOK</string>
     <string name="select_country">ZADAJ KRAJINU</string>
+    <string name="exit_button_text">UKONČIŤ</string>
+    <string name="view_button_text">ZOBRAZ</string>
+    <string name="getgps_button_text">ZADAŤ POMOCOU GPS</string>
+    <string name="progress_title_message">Načitávajú sa upozornenia</string>
+    <string name="empty_place">PROSÍM VYPLNTE MIESTO!</string>
+    <string name="empty_author">PROSÍM VYPLNTE MENO!</string>
+    <string name="empty_description">PROSÍM VYPLNTE POPIS!</string>
+    <string name="entry_place">ZADAJTE MIESTO HLIADKY</string>
+    <string name="entry_author">ZADAJTE VAŠE MENO</string>
+    <string name="entry_description">ZADAJTE POPIS UPOZORNENIA</string>
+    <string name="entry_title">PRIDANIE UPOZORNENIA</string>
+    <string name="add_button_text">Pridať</string>
+    <string name="cancal_button_text">Zrušiť</string>
+    <string name="message_indistrict_title">UPOZORNENIA V OKRESE</string>
     <string-array name="counrty_spinner_string_array">
         <item></item>
-        <item>CZECH REPUBLIC</item>
-        <item>SLOVAKIA</item>
+        <item>Česká Republika</item>
+        <item>Slovensko"</item>
     </string-array>
     <string name="select_district">ZADAJ REGION</string>
+    <string name="statistyka_pre_region">Štatistyka pre region</string>
 
-    <string-array name="slovakia_district_string_array">
-        <item></item>
-        <item>Banská Bystrica</item>
-        <item>Banská Štiavnica</item>
-        <item>Bardejov</item>
-        <item>Bánovce nad Bebravou</item>
-        <item>Brezno</item>
-        <item>Bratislava I</item>
-        <item>Bratislava II</item>
-        <item>Bratislava III</item>
-        <item>Bratislava IV</item>
-        <item>Bratislava V</item>
-        <item>Bytca</item>
-        <item>Cadca</item>
-        <item>Detva</item>
-        <item>Dolný Kubín</item>
-        <item>Dunajská Streda</item>
-        <item>Galanta</item>
-        <item>Gelnica</item>
-        <item>Hlohovec</item>
-        <item>Humenné</item>
-        <item>Ilava</item>
-        <item>Kežmarok</item>
-        <item>Komárno</item>
-        <item>Košice I</item>
-        <item>Košice II</item>
-        <item>Košice III</item>
-        <item>Košice IV</item>
-        <item>Košice – okolie</item>
-        <item>Krupina</item>
-        <item>Kysucké Nové Mesto</item>
-        <item>Levice</item>
-        <item>Levoca</item>
-        <item>Liptovský Mikuláš</item>
-        <item>Lucenec</item>
-        <item>Malacky</item>
-        <item>Martin</item>
-        <item>Medzilaborce</item>
-        <item>Michalovce</item>
-        <item>Myjava</item>
-        <item>Námestovo</item>
-        <item>Nitra</item>
-        <item>Nové Mesto nad Váhom</item>
-        <item>Nové Zámky</item>
-        <item>Partizánske</item>
-        <item>Pezinok</item>
-        <item>Piešťany</item>
-        <item>Poltár</item>
-        <item>Poprad</item>
-        <item>Považská Bystrica</item>
-        <item>Prešov</item>
-        <item>Prievidza</item>
-        <item>Púchov</item>
-        <item>Revúca</item>
-        <item>Rimavská Sobota</item>
-        <item>Rožňava</item>
-        <item>Ružomberok</item>
-        <item>Sabinov</item>
-        <item>Senec</item>
-        <item>Senica</item>
-        <item>Skalica</item>
-        <item>Snina</item>
-        <item>Sobrance</item>
-        <item>Spišská Nová Ves</item>
-        <item>Stará Ľubovňa</item>
-        <item>Stropkov</item>
-        <item>Svidník</item>
-        <item>Šaľa</item>
-        <item>Topolcany</item>
-        <item>Trebišov</item>
-        <item>Trenčín</item>
-        <item>Trnava</item>
-        <item>Turcianske Teplice</item>
-        <item>Tvrdošín</item>
-        <item>Veľký Krtíš</item>
-        <item>Vranov nad Toplou</item>
-        <item>Zlaté Moravce</item>
-        <item>Zvolen</item>
-        <item>Žarnovica</item>
-        <item>Žiar nad Hronom</item>
-        <item>Žilina</item>
-    </string-array>
     <string-array name="czechrepublic_district_string_array">
         <item></item>
         <item>Beroun</item>
@@ -172,3 +109,5 @@
         <item>Žďár nad Sázavou</item>
     </string-array>
 </resources>
+
+

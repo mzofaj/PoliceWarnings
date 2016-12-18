@@ -11,6 +11,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+
 import eu.fukysoft.policewanings.R;
 
 public class ActivitySplash extends Activity {
@@ -41,6 +45,7 @@ public class ActivitySplash extends Activity {
         ImageView iv = (ImageView) findViewById(R.id.splash);
         iv.clearAnimation();
         iv.startAnimation(anim);
+
 
         splashTread = new Thread() {
             @Override

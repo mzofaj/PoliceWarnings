@@ -1,14 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/colorPrimaryOrange"
-    android:id="@android:id/text1"
-    style="?android:attr/spinnerItemStyle"
-    android:maxLines="1"
-    android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
- android:textSize="18dp"
-    android:textStyle="bold"
-    android:layout_marginTop="18dp"
-    android:layout_marginBottom="50dp"
-    />
+    android:orientation="vertical"
+    android:background="@color/colorPrimaryOrange">
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/text1"
+        style="?android:attr/spinnerItemStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:maxLines="1"
+        android:textSize="15dp"
+        android:textStyle="bold" />
+<ImageView
+    android:id="@+id/image_spinner_icon"
+    android:layout_alignParentRight="true"
+    android:layout_centerHorizontal="true"
+    android:layout_marginRight="3dp"
+    android:layout_marginTop="4dp"
+    android:background="@drawable/spinner_icon"
+    android:visibility="gone"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
+</RelativeLayout>
+    <View
+        android:background="@color/colorPrimaryLight"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+</LinearLayout>

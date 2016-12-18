@@ -25,7 +25,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="@dimen/line_height_dimension"
         android:background="@color/colorPrimaryLight" />
 
     <LinearLayout
@@ -36,11 +36,12 @@
         android:orientation="vertical">
 
         <TextView
+            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:text="@string/select_country"
-            android:textColor="@color/colorText" />
+            android:textColor="@color/colorBoldText" />
 
         <Spinner
             android:id="@+id/spinner_country"
@@ -53,7 +54,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="@dimen/line_height_dimension"
         android:background="@color/colorPrimaryLight" />
 
     <LinearLayout
@@ -64,11 +65,12 @@
         android:orientation="vertical">
 
         <TextView
+            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:text="@string/select_district"
-            android:textColor="@color/colorText" />
+            android:textColor="@color/colorBoldText" />
 
         <Spinner
             android:id="@+id/spinner_district"
@@ -79,9 +81,33 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="@dimen/line_height_dimension"
         android:background="@color/colorPrimaryLight" />
-
+    <Button
+        android:layout_marginTop="10dp"
+        android:id="@+id/button_set_gps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/button_decoration"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:text="@string/button_getgps"
+        android:textColor="@color/colorBoldText" />
+    <Button
+        android:layout_marginTop="10dp"
+        android:id="@+id/button_set_fast_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/button_decoration"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:enabled="false"
+        android:text="@string/button_set_fast_message"
+        android:textColor="@color/colorBoldText" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -92,22 +118,21 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:background="@color/colorPrimaryOrange"
+            android:background="@drawable/button_decoration"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:text="ZOBRAZ UPOZORNENIA"
-            android:textColor="@color/colorPrimaryDark"
-            android:textStyle="bold" />
+            android:text="@string/view_button_text"
+            android:textColor="@color/colorBoldText" />
 
         <Button
+            android:id="@+id/button_exit_app"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@color/colorPrimaryOrange"
+            android:background="@drawable/button_decoration"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:text="EXIT"
-            android:textColor="@color/colorPrimaryDark"
-            android:textStyle="bold" />
+            android:text="@string/exit_button_text"
+            android:textColor="@color/colorBoldText" />
     </RelativeLayout>
 </LinearLayout>
