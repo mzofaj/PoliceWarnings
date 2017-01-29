@@ -1,19 +1,17 @@
 package eu.fukysoft.policewanings.Models;
 
-import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Marian on 4.12.2016.
  */
 @IgnoreExtraProperties
-public class WarningMessage implements Serializable {
+public class WarningMessageSerializable implements Serializable {
     private String author;
     private String place;
     private String text;
@@ -21,14 +19,13 @@ public class WarningMessage implements Serializable {
     public int starCount = 0;
     private double latitude;
     private double longtude;
-    private ImageView image;
     public HashMap<String, Boolean> stars = new HashMap<>();
 
-    public WarningMessage(){
+    public WarningMessageSerializable(){
 
     }
 
-    public WarningMessage(HashMap<String, Object> toMap) {
+    public WarningMessageSerializable(HashMap<String, Object> toMap) {
         this.author = toMap.get("author").toString();
         this.place = toMap.get("place").toString();
         this.text = toMap.get("text").toString();
@@ -37,7 +34,7 @@ public class WarningMessage implements Serializable {
         this.longtude = Double.parseDouble(toMap.get("longtitude").toString());
     }
 
-    public WarningMessage(String author, String place, String text, double time, double latitude, double longtude) {
+    public WarningMessageSerializable(String author, String place, String text, double time, double latitude, double longtude) {
         this.author = author;
         this.place = place;
         this.text = text;
@@ -56,14 +53,6 @@ public class WarningMessage implements Serializable {
         result.put("longtitude", longtude);
 
         return result;
-    }
-
-    public ImageView getImage() {
-        return image;
-    }
-
-    public void setImage(ImageView image) {
-        this.image = image;
     }
 
     public String getAuthor() {

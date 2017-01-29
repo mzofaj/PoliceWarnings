@@ -6,10 +6,14 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
@@ -19,22 +23,30 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.nightonke.boommenu.BoomMenuButton;
 import com.nightonke.boommenu.Types.BoomType;
 import com.nightonke.boommenu.Types.ButtonType;
 import com.nightonke.boommenu.Types.PlaceType;
 import com.nightonke.boommenu.Util;
 
+import java.io.ByteArrayOutputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +55,7 @@ import java.util.Map;
 import eu.fukysoft.policewanings.Adapters.AdapterCountry;
 import eu.fukysoft.policewanings.Adapters.AdapterMessage;
 import eu.fukysoft.policewanings.Models.WarningMessage;
+import eu.fukysoft.policewanings.Models.WarningMessageSerializable;
 import eu.fukysoft.policewanings.R;
 
 public class ActivityMessage extends Activity {
@@ -54,6 +67,9 @@ public class ActivityMessage extends Activity {
     private BoomMenuButton boomMenuButton;
     private String place = "";
     private static boolean activityState;
+    private ImageView photoAddImage;
+    private StorageReference storageRef;
+    private Bitmap bitmapFromCam;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +83,9 @@ public class ActivityMessage extends Activity {
         cities = bundle.getStringArray("cities");
         TextView textViewMessageDescription = (TextView) findViewById(R.id.textview_message_description);
         textViewMessageDescription.setText(this.getString(R.string.message_indistrict_title) + " \n" + district.toUpperCase());
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReferenceFromUrl("gs://policewarnings-66707.appspot.com/");
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
@@ -90,10 +109,16 @@ public class ActivityMessage extends Activity {
                 messageList = new ArrayList<>();
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     messageList.add(new WarningMessage((HashMap<String, Object>) postSnapshot.getValue()));
+
+
                 }
                 ListView listViewMessage = (ListView) findViewById(R.id.listview_message);
                 AdapterMessage adapterMessage = new AdapterMessage(ActivityMessage.this, messageList);
                 listViewMessage.setAdapter(adapterMessage);
+
+                for(int x = 0; x<messageList.size();x++){
+                    getImage(messageList.get(x));
+                }
                 progressDialog.dismiss();
                 if (!activityState) {
                     callNotification();
@@ -142,9 +167,20 @@ public class ActivityMessage extends Activity {
         final Spinner spinnerPlace = (Spinner) view.findViewById(R.id.spinner_place);
         Button buttonAddDialog = (Button) view.findViewById(R.id.button_add_dialog);
         Button buttonCancalDialog = (Button) view.findViewById(R.id.button_cancal_dialog);
+        Button addPhoto = (Button) view.findViewById(R.id.add_photo);
+        photoAddImage = (ImageView) view.findViewById(R.id.image_add_photo);
         AdapterCountry adapterPlace = new AdapterCountry(this, cities);
         spinnerPlace.setAdapter(adapterPlace);
 
+        addPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, 12);
+                }
+            }
+        });
         spinnerPlace.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -172,7 +208,7 @@ public class ActivityMessage extends Activity {
                 String description = editTextDescription.getText().toString();
 
                 if (!author.equals("") && !place.equals("") && !description.equals("")) {
-                    writeNewPost(author, place, description, System.currentTimeMillis(), 0, 0);
+                    writeNewPost(author, place, description, System.currentTimeMillis(), 0, 0,bitmapFromCam);
                     activityState = true;
                     addMessageDialog.dismiss();
                 } else {
@@ -203,8 +239,30 @@ public class ActivityMessage extends Activity {
 
     }
 
-    private void writeNewPost(String author, String place, String text, double time, double latitude, double longtitude) {
+    private void writeNewPost(String author, String place, String text, double time, double latitude, double longtitude,Bitmap bitmap) {
+        if (bitmap != null) {
+            DecimalFormat formatter = new DecimalFormat("#000000000000");
+            String times = formatter.format(time);
 
+            StorageReference imagesRef = storageRef.child(country).child(district).child(place).child("" +times);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+
+            UploadTask uploadTask = imagesRef.putBytes(data);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                }
+            });
+        }
         String key = myRef.child("WARNINGS").child(country).child(district).push().getKey();
         WarningMessage warningMessage = new WarningMessage(author, place, text, time, latitude, longtitude);
         Map<String, Object> warningMessageValues = warningMessage.toMap();
@@ -245,9 +303,19 @@ public class ActivityMessage extends Activity {
                                 addWarningMessage();
                                 break;
                             case 1:
+                                ArrayList<WarningMessageSerializable> serializableMessageList = new ArrayList<>();
+                                for(int i = 0;i<messageList.size();i++){
+                                    serializableMessageList.add(new WarningMessageSerializable(messageList.get(i).getAuthor(),
+                                            messageList.get(i).getPlace(),
+                                            messageList.get(i).getText(),
+                                            messageList.get(i).getTime(),
+                                            messageList.get(i).getLatitude(),
+                                            messageList.get(i).getLongtude()));
+
+                                }
                                 Intent intent = new Intent(ActivityMessage.this, ActivityStatisticDistrict.class);
-                                intent.putExtra("messagelist",messageList);
-                                intent.putExtra("district",district);
+                                intent.putExtra("messagelist", serializableMessageList);
+                                intent.putExtra("district", district);
                                 startActivity(intent);
 
                                 break;
@@ -255,6 +323,41 @@ public class ActivityMessage extends Activity {
                     }
                 })
                 .init(boomMenuButton);
+    }
+
+    public void getImage(final WarningMessage message) {
+        final long ONE_MEGABYTE = 1024 * 1024;
+        final Bitmap[] bitmap = new Bitmap[1];
+        DecimalFormat formatter = new DecimalFormat("#000000000000");
+        String times = formatter.format(message.getTime());
+        storageRef.child(country).child(district).child(message.getPlace()).child(times).getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+
+                bitmap[0] = BitmapFactory.decodeByteArray(bytes, 0,
+                        bytes.length);
+                    if(message.getImage()!=null) {
+                        message.getImage().setVisibility(View.VISIBLE);
+                        message.getImage().setImageBitmap(bitmap[0]); }
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode > 11 && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            bitmapFromCam = (Bitmap) extras.get("data");
+            photoAddImage.setImageBitmap(bitmapFromCam);
+        }
+
     }
 
     @Override

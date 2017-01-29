@@ -7,12 +7,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -21,17 +24,24 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -39,6 +49,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -64,6 +75,9 @@ public class ActivityMain extends Activity implements LocationListener {
     private String place = "";
     private LocationManager locationManager;
     private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 0;
+    private ImageView photoAddImage;
+    private StorageReference storageRef;
+    private Bitmap bitmapFromCam;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,8 +120,10 @@ public class ActivityMain extends Activity implements LocationListener {
         countryList[0] = "";
         for (int i = 0; i < config.getCountry().size(); i++)
             countryList[i + 1] = config.getCountry().get(i).getDisplay();
-
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReferenceFromUrl("gs://policewarnings-66707.appspot.com/");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
+
         myRef = database.getReference();
         AdapterCountry countryAdapter = new AdapterCountry(ActivityMain.this, countryList);
         spinnerCountry.setAdapter(countryAdapter);
@@ -144,7 +160,8 @@ public class ActivityMain extends Activity implements LocationListener {
                 if (i != 0) {
                     i = i - 1;
                     selectedDistrict = adapterView.getSelectedItem().toString();
-                    if(selectedDistrict!="" || selectedDistrict!=null) buttonAddFastMessage.setEnabled(true);
+                    if (selectedDistrict != "" || selectedDistrict != null)
+                        buttonAddFastMessage.setEnabled(true);
                     cityList = new String[config.getCountry().get(contrySelect).getDistrict().get(i).getPlaces().size() + 1];
                     cityList[0] = "";
                     for (int r = 0; r < config.getCountry().get(contrySelect).getDistrict().get(i).getPlaces().size(); r++) {
@@ -186,8 +203,8 @@ public class ActivityMain extends Activity implements LocationListener {
         buttonAddFastMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(selectedDistrict!=null){
-
+                if (selectedDistrict != null) {
+bitmapFromCam = null;
                     LayoutInflater inflater = LayoutInflater.from(ActivityMain.this);
                     View viewer = inflater.inflate(R.layout.addmessage_dialog_layout, null, false);
                     final EditText editTextAuthor = (EditText) viewer.findViewById(R.id.edittext_author);
@@ -198,8 +215,20 @@ public class ActivityMain extends Activity implements LocationListener {
                     final Spinner spinnerPlace = (Spinner) viewer.findViewById(R.id.spinner_place);
                     Button buttonAddDialog = (Button) viewer.findViewById(R.id.button_add_dialog);
                     Button buttonCancalDialog = (Button) viewer.findViewById(R.id.button_cancal_dialog);
-                    AdapterCountry adapterPlace = new AdapterCountry(ActivityMain.this,cityList);
+                    Button addPhoto = (Button) viewer.findViewById(R.id.add_photo);
+                    photoAddImage = (ImageView) viewer.findViewById(R.id.image_add_photo);
+                    AdapterCountry adapterPlace = new AdapterCountry(ActivityMain.this, cityList);
                     spinnerPlace.setAdapter(adapterPlace);
+
+                    addPhoto.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                                startActivityForResult(takePictureIntent, 12);
+                            }
+                        }
+                    });
 
                     spinnerPlace.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
@@ -228,7 +257,7 @@ public class ActivityMain extends Activity implements LocationListener {
                             String description = editTextDescription.getText().toString();
 
                             if (!author.equals("") && !place.equals("") && !description.equals("")) {
-                                writeNewPost(author, place, description, System.currentTimeMillis(), 0, 0);
+                                writeNewPost(author, place, description, System.currentTimeMillis(), 0, 0, bitmapFromCam);
                                 addMessageDialog.dismiss();
                             } else {
                                 if (author.equals("")) {
@@ -242,7 +271,7 @@ public class ActivityMain extends Activity implements LocationListener {
                                 if (description.equals("")) {
                                     textViewEmptyDescription.setVisibility(View.VISIBLE);
                                     textViewEmptyDescription.setText(R.string.empty_description);
-                                }else textViewEmptyDescription.setVisibility(View.GONE);
+                                } else textViewEmptyDescription.setVisibility(View.GONE);
                             }
 
                         }
@@ -267,30 +296,54 @@ public class ActivityMain extends Activity implements LocationListener {
         });
 
 
+    }
+
+    private void setPlaceGet() {
+        Geocoder geocoder = new Geocoder(ActivityMain.this, Locale.getDefault());
+        String country = "";
+        String city = "";
+        List<Address> list = null;
+        try {
+            list = geocoder.getFromLocation(latitude, longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (list != null & list.size() > 0) {
+            Address address = list.get(0);
+            city = address.getSubAdminArea();
+            country = address.getCountryName();
+        }
+        setCountryDistrictGps(country, city);
 
     }
 
-    private void setPlaceGet(){
-                        Geocoder geocoder = new Geocoder(ActivityMain.this, Locale.getDefault());
-                        String country = "";
-                        String city = "";
-                        List<Address> list = null;
-                        try {
-                            list = geocoder.getFromLocation(49.406373, 19.483884, 1);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        if (list != null & list.size() > 0) {
-                            Address address = list.get(0);
-                            city = address.getSubAdminArea();
-                            country = address.getCountryName();
-                        }
-                        setCountryDistrictGps(country, city);
+    private void writeNewPost(String author, String place, String text, double time, double latitude, double longtitude, Bitmap bitmap) {
+        if (bitmap != null) {
+            DecimalFormat formatter = new DecimalFormat("#000000000000");
+            String times = formatter.format(time);
 
-    }
-    private void writeNewPost(String author, String place, String text, double time, double latitude, double longtitude) {
+            StorageReference imagesRef = storageRef.child(selectedCountry).child(selectedDistrict).child(place).child("" +times);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+
+            UploadTask uploadTask = imagesRef.putBytes(data);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                }
+            });
+        }
 
         String key = myRef.child("WARNINGS").child(selectedCountry).child(selectedDistrict).push().getKey();
+
         WarningMessage warningMessage = new WarningMessage(author, place, text, time, latitude, longtitude);
         Map<String, Object> warningMessageValues = warningMessage.toMap();
 
@@ -319,7 +372,6 @@ public class ActivityMain extends Activity implements LocationListener {
     }
 
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -334,7 +386,6 @@ public class ActivityMain extends Activity implements LocationListener {
     }
 
 
-
     private void showGPSDisabledAlertToUser() {
         new MaterialDialog.Builder(ActivityMain.this)
                 .title("GPS je vypnuto.")
@@ -345,26 +396,27 @@ public class ActivityMain extends Activity implements LocationListener {
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorPrimary))
                 .positiveText("Nastavení")
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
-                Intent callGPSSettingIntent = new Intent(
-                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(callGPSSettingIntent);
-                setPlaceGet();
+                    @Override
+                    public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
+                        Intent callGPSSettingIntent = new Intent(
+                                android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(callGPSSettingIntent);
+                        setPlaceGet();
 
-            }
-        })
+                    }
+                })
                 .show();
 
     }
+
     @SuppressWarnings("MissingPermission")
     public void grantedLocation() {
-        locationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,1000,0,this);
+        locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, this);
         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         if (location != null) {
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
         }
     }
 
@@ -386,6 +438,16 @@ public class ActivityMain extends Activity implements LocationListener {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode > 11 && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            bitmapFromCam = (Bitmap) extras.get("data");
+            photoAddImage.setImageBitmap(bitmapFromCam);
+        }
+
+    }
 
     @Override
     public void onLocationChanged(Location location) {

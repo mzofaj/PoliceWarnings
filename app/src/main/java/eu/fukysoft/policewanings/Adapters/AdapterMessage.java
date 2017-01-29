@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.security.Timestamp;
@@ -54,12 +55,16 @@ public class AdapterMessage extends BaseAdapter {
             viewHolder.textViewPlace = (TextView) view.findViewById(R.id.textViewPlace);
             viewHolder.textViewTime = (TextView) view.findViewById(R.id.textViewTime);
             viewHolder.textViewDescrption = (TextView) view.findViewById(R.id.textViewDescription);
+            viewHolder.image = (ImageView) view.findViewById(R.id.message_image);
+            array.get(position).setImage(viewHolder.image);
             view.setTag(viewHolder);
         }
         Double time = Double.parseDouble(array.get(position).toMap().get("time").toString());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy' 'HH:mm:ss");
 
         viewHolder = (ViewHolder) view.getTag();
+
+
         viewHolder.textViewAuthor.setText(""+array.get(position).toMap().get("author").toString());
         viewHolder.textViewPlace.setText(""+array.get(position).toMap().get("place").toString());
         viewHolder.textViewTime.setText(""+simpleDateFormat.format(time));
@@ -69,6 +74,7 @@ public class AdapterMessage extends BaseAdapter {
 
     private static class ViewHolder {
 
+        ImageView image;
         TextView textViewAuthor;
         TextView textViewPlace;
         TextView textViewTime;

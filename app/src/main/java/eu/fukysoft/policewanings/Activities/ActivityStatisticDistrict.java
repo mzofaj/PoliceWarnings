@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 import eu.fukysoft.policewanings.Models.WarningMessage;
+import eu.fukysoft.policewanings.Models.WarningMessageSerializable;
 import eu.fukysoft.policewanings.R;
 import lecho.lib.hellocharts.listener.PieChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.PieChartData;
@@ -22,10 +23,10 @@ import lecho.lib.hellocharts.model.SliceValue;
 import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.PieChartView;
 
-public class ActivityStatisticDistrict extends Activity {
+public class   ActivityStatisticDistrict extends Activity {
     private PieChartView chart;
     private PieChartData data;
-    private ArrayList<WarningMessage> messageArrayList;
+    private ArrayList<WarningMessageSerializable> messageArrayList;
     private HashMap<String, Integer> countCityMessage = new HashMap<>();
 private int[] colors = new int[3];
     private String[] countryByPage;
@@ -39,7 +40,7 @@ private TextView textViewMessage;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistic_district);
         Bundle bundle = getIntent().getExtras();
-        messageArrayList = (ArrayList<WarningMessage>) bundle.getSerializable("messagelist");
+        messageArrayList = (ArrayList<WarningMessageSerializable>) bundle.getSerializable("messagelist");
 textViewMessage = (TextView) findViewById(R.id.textMessage);
 
         TextView textViewTitle = (TextView) findViewById(R.id.textview_stat_description);
@@ -107,11 +108,11 @@ colors[0] = ContextCompat.getColor(this, R.color.colorPrimaryOrange);
 
         data = new PieChartData(values);
         data.setHasLabels(hasLabels);
-data.setValueLabelsTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        data.setValueLabelsTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         //  data.setHasLabelsOnlyForSelected(hasLabelForSelected);
         //  data.setHasLabelsOutside(hasLabelsOutside);
         //  data.setHasCenterCircle(hasCenterCircle);
-data.setHasCenterCircle(false);
+        data.setHasCenterCircle(false);
 
         if (isExploded) {
             data.setSlicesSpacing(15);
@@ -142,7 +143,7 @@ data.setHasCenterCircle(false);
         @Override
         public void onValueSelected(int arcIndex, SliceValue value) {
             textViewMessage.setText("");
-            for (WarningMessage message : messageArrayList) {
+            for (WarningMessageSerializable message : messageArrayList) {
                 if(message.getPlace().equals(countryByPage[arcIndex] )){
                     textViewMessage.append(message.getText()+"\n\n");
                 }
